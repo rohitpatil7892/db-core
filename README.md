@@ -2,7 +2,7 @@
 
 A comprehensive TypeScript-based database core layer for microservices with PostgreSQL and Redis caching support.
 
-**Version:** 1.0.1 | **License:** MIT | **Language:** TypeScript
+**Version:** 1.0.3 | **License:** MIT | **Language:** TypeScript
 
 ---
 
@@ -671,12 +671,17 @@ For issues and questions, please open an issue on GitHub.
 ### v1.0.1
 - bug fix
 
-### v1.0.2 (Latest)
+### v1.0.2
 - Added automatic database creation and schema synchronization
 - Added 30+ model definitions from Sequelize reference
 - Added read/write replica support for horizontal scaling
 - Added load balancing strategies (round-robin, weighted, random)
 - Added comprehensive documentation and examples
 - Enhanced DBCore with schema management methods
+
+### v1.0.3 (Latest)
+- Added cache invalidation strategies
+- Added cache key builder
+- Added cache invalidation manager
 
 
