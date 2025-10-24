@@ -17,6 +17,30 @@ export interface DatabaseConfig {
 }
 
 /**
+ * Read replica configuration
+ */
+export interface ReadReplicaConfig {
+  host: string;
+  port: number;
+  database: string;
+  user: string;
+  password: string;
+  max?: number;
+  min?: number;
+  ssl?: boolean;
+  weight?: number; // For load balancing (default: 1)
+}
+
+/**
+ * Database configuration with read replicas
+ */
+export interface DatabaseConfigWithReplicas {
+  write: DatabaseConfig;
+  read?: ReadReplicaConfig[];
+  loadBalancing?: 'round-robin' | 'random' | 'weighted';
+}
+
+/**
  * Redis configuration interface
  */
 export interface RedisConfig {

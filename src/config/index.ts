@@ -1,5 +1,5 @@
 import { config as dotenvConfig } from 'dotenv';
-import { DatabaseConfig, RedisConfig } from '../types';
+import { DatabaseConfig, RedisConfig, DatabaseConfigWithReplicas, ReadReplicaConfig } from '../types';
 
 // Load environment variables
 dotenvConfig();
@@ -19,6 +19,43 @@ export const getDatabaseConfig = (): DatabaseConfig => ({
   connectionTimeoutMillis: parseInt(process.env.DB_CONNECTION_TIMEOUT_MS || '5000', 10),
   ssl: process.env.DB_SSL === 'true',
 });
+
+/**
+ * Get database configuration with read replicas
+ * Supports multiple read replicas for horizontal scaling
+ */
+export const getDatabaseConfigWithReplicas = (): DatabaseConfigWithReplicas => {
+  const config: DatabaseConfigWithReplicas = {
+    write: getDatabaseConfig(),
+    loadBalancing: (process.env.DB_LOAD_BALANCING as any) || 'round-robin',
+  };
+
+  // Parse read replicas from environment
+  // Format: DB_READ_REPLICA_1_HOST, DB_READ_REPLICA_1_PORT, etc.
+  const readReplicas: ReadReplicaConfig[] = [];
+  
+  let replicaIndex = 1;
+  while (process.env[`DB_READ_REPLICA_${replicaIndex}_HOST`]) {
+    readReplicas.push({
+      host: process.env[`DB_READ_REPLICA_${replicaIndex}_HOST`]!,
+      port: parseInt(process.env[`DB_READ_REPLICA_${replicaIndex}_PORT`] || '5432', 10),
+      database: process.env[`DB_READ_REPLICA_${replicaIndex}_DATABASE`] || process.env.DB_NAME || 'postgres',
+      user: process.env[`DB_READ_REPLICA_${replicaIndex}_USER`] || process.env.DB_USER || 'postgres',
+      password: process.env[`DB_READ_REPLICA_${replicaIndex}_PASSWORD`] || process.env.DB_PASSWORD || '',
+      max: parseInt(process.env[`DB_READ_REPLICA_${replicaIndex}_POOL_MAX`] || '10', 10),
+      min: parseInt(process.env[`DB_READ_REPLICA_${replicaIndex}_POOL_MIN`] || '2', 10),
+      ssl: process.env[`DB_READ_REPLICA_${replicaIndex}_SSL`] === 'true',
+      weight: parseInt(process.env[`DB_READ_REPLICA_${replicaIndex}_WEIGHT`] || '1', 10),
+    });
+    replicaIndex++;
+  }
+
+  if (readReplicas.length > 0) {
+    config.read = readReplicas;
+  }
+
+  return config;
+};
 
 /**
  * Get Redis configuration from environment variables

@@ -6,6 +6,7 @@
 // Main exports
 export { DBCore } from './DBCore';
 export { DatabaseManager } from './database/DatabaseManager';
+export { ReplicaManager } from './database/ReplicaManager';
 export { RedisManager } from './cache/RedisManager';
 export { QueryBuilder } from './query/QueryBuilder';
 export { BaseRepository } from './repository/BaseRepository';
@@ -15,6 +16,7 @@ export { SchemaManager } from './schema/SchemaManager';
 // Configuration
 export {
   getDatabaseConfig,
+  getDatabaseConfigWithReplicas,
   getRedisConfig,
   getLogLevel,
   isProduction,
