@@ -2,7 +2,7 @@
 
 A comprehensive TypeScript-based database core layer for microservices with PostgreSQL and Redis caching support.
 
-**Version:** 1.0.3 | **License:** MIT | **Language:** TypeScript
+**Version:** 1.0.4 | **License:** MIT | **Language:** TypeScript
 
 ---
 
@@ -679,9 +679,13 @@ For issues and questions, please open an issue on GitHub.
 - Added comprehensive documentation and examples
 - Enhanced DBCore with schema management methods
 
-### v1.0.3 (Latest)
+### v1.0.3
 - Added cache invalidation strategies
 - Added cache key builder
 - Added cache invalidation manager
+
+### v1.0.4 (Latest)
+- Documentation updates
+- Cache invalidation examples
 
 
