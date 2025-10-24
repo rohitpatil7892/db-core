@@ -1,6 +1,6 @@
 {
   "name": "@rohit_patil/db-core",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Core database layer with PostgreSQL and Redis caching for microservices",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
