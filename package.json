@@ -1,5 +1,5 @@
 {
-  "name": "@rohit-patil/db-core",
+  "name": "@rohit_patil/db-core",
   "version": "1.0.0",
   "description": "Core database layer with PostgreSQL and Redis caching for microservices",
   "main": "dist/index.js",

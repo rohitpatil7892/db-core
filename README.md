@@ -1,4 +1,4 @@
-# @your-org/db-core
+# @rohit_patil/db-core
 
 A comprehensive TypeScript-based database core layer for microservices with PostgreSQL and Redis caching support.
 
@@ -17,7 +17,7 @@ A comprehensive TypeScript-based database core layer for microservices with Post
 ## Installation
 
 ```bash
-npm install @your-org/db-core pg redis
+npm install @rohit_patil/db-core pg redis
 ```
 
 ## Quick Start
@@ -48,7 +48,7 @@ REDIS_DEFAULT_TTL=3600
 ### 2. Initialize DBCore
 
 ```typescript
-import { DBCore } from '@your-org/db-core';
+import { DBCore } from '@rohit_patil/db-core';
 
 const db = new DBCore();
 
