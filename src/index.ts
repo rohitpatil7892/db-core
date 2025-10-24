@@ -8,6 +8,7 @@ export { DBCore } from './DBCore';
 export { DatabaseManager } from './database/DatabaseManager';
 export { ReplicaManager } from './database/ReplicaManager';
 export { RedisManager } from './cache/RedisManager';
+export { CacheInvalidationManager, CacheKeyBuilder } from './cache/CacheInvalidationStrategy';
 export { QueryBuilder } from './query/QueryBuilder';
 export { BaseRepository } from './repository/BaseRepository';
 export { MigrationManager } from './migrations/MigrationManager';
