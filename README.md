@@ -665,21 +665,13 @@ For issues and questions, please open an issue on GitHub.
 
 ## Changelog
 
-### v1.0.1 (Latest)
-- ✅ Added automatic database creation and schema synchronization
-- ✅ Added 30+ model definitions from Sequelize reference
-- ✅ Added read/write replica support for horizontal scaling
-- ✅ Added load balancing strategies (round-robin, weighted, random)
-- ✅ Added comprehensive documentation and examples
-- ✅ Enhanced DBCore with schema management methods
-
 ### v1.0.0
 - Initial release with core features
 
 ### v1.0.1
 - bug fix
 
-### v1.0.2
+### v1.0.2 (Latest)
 - Added automatic database creation and schema synchronization
 - Added 30+ model definitions from Sequelize reference
 - Added read/write replica support for horizontal scaling
