@@ -3,6 +3,7 @@ import { DatabaseManager } from './database/DatabaseManager';
 import { RedisManager } from './cache/RedisManager';
 import { QueryBuilder } from './query/QueryBuilder';
 import { BaseRepository } from './repository/BaseRepository';
+import { SchemaManager } from './schema/SchemaManager';
 import { DatabaseConfig, RedisConfig, TransactionCallback } from './types';
 import { getDatabaseConfig, getRedisConfig } from './config';
 import logger from './utils/logger';
@@ -14,14 +15,20 @@ import logger from './utils/logger';
 export class DBCore {
   private db: DatabaseManager;
   private cache?: RedisManager;
+  private schema: SchemaManager;
   private isInitialized: boolean = false;
+  private dbConfig: DatabaseConfig;
+  private autoSync: boolean = false;
 
-  constructor(dbConfig?: DatabaseConfig, redisConfig?: RedisConfig) {
+  constructor(dbConfig?: DatabaseConfig, redisConfig?: RedisConfig, options?: { autoSync?: boolean }) {
     // Use provided config or load from environment
     const finalDbConfig = dbConfig || getDatabaseConfig();
     const finalRedisConfig = redisConfig || getRedisConfig();
 
+    this.dbConfig = finalDbConfig;
     this.db = new DatabaseManager(finalDbConfig);
+    this.schema = new SchemaManager(finalDbConfig);
+    this.autoSync = options?.autoSync || false;
     
     // Only initialize Redis if config is provided or exists in environment
     if (redisConfig || process.env.REDIS_HOST) {
@@ -31,16 +38,38 @@ export class DBCore {
 
   /**
    * Initialize database and cache connections
+   * @param options - Initialization options
+   * @param options.ensureDatabase - Create database if it doesn't exist (default: false)
+   * @param options.syncSchema - Synchronize database schema (default: false)
    */
-  public async initialize(): Promise<void> {
+  public async initialize(options?: { ensureDatabase?: boolean; syncSchema?: boolean }): Promise<void> {
     if (this.isInitialized) {
       logger.warn('DBCore already initialized');
       return;
     }
 
     try {
+      const ensureDb = options?.ensureDatabase || false;
+      const syncSchema = options?.syncSchema || this.autoSync;
+
+      // Create database if requested
+      if (ensureDb) {
+        logger.info('Checking if database exists...');
+        const created = await this.schema.ensureDatabaseExists();
+        if (created) {
+          logger.info(`Database "${this.dbConfig.database}" created successfully`);
+        }
+      }
+
       // Connect to database
       await this.db.connect();
+
+      // Sync schema if requested
+      if (syncSchema) {
+        logger.info('Synchronizing database schema...');
+        await this.schema.syncSchema(this.db.getPool());
+        logger.info('Schema synchronized successfully');
+      }
 
       // Connect to Redis if available
       if (this.cache) {
@@ -161,6 +190,31 @@ export class DBCore {
    */
   public getPoolStats() {
     return this.db.getPoolStats();
+  }
+
+  /**
+   * Synchronize database schema
+   * Creates all tables if they don't exist
+   */
+  public async syncSchema(): Promise<void> {
+    this.ensureInitialized();
+    await this.schema.syncSchema(this.db.getPool());
+  }
+
+  /**
+   * Get list of existing tables
+   */
+  public async getExistingTables(): Promise<string[]> {
+    this.ensureInitialized();
+    return this.schema.getExistingTables(this.db.getPool());
+  }
+
+  /**
+   * Check if schema is up to date
+   */
+  public async isSchemaUpToDate(): Promise<boolean> {
+    this.ensureInitialized();
+    return this.schema.isSchemaUpToDate(this.db.getPool());
   }
 
   /**

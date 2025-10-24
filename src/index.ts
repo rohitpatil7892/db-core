@@ -10,6 +10,7 @@ export { RedisManager } from './cache/RedisManager';
 export { QueryBuilder } from './query/QueryBuilder';
 export { BaseRepository } from './repository/BaseRepository';
 export { MigrationManager } from './migrations/MigrationManager';
+export { SchemaManager } from './schema/SchemaManager';
 
 // Configuration
 export {

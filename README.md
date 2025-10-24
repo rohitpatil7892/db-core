@@ -4,14 +4,17 @@ A comprehensive TypeScript-based database core layer for microservices with Post
 
 ## Features
 
-- 🚀 **PostgreSQL Connection Pooling** - Efficient connection management with pg
-- 💾 **Redis Caching** - Built-in caching layer for query optimization
+- 🗄️ **PostgreSQL Connection Pooling** - Efficient connection management with pg
+- 💾 **Redis Caching** - Automatic query result caching
 - 🔨 **Query Builder** - Fluent API for building SQL queries
-- 📦 **Repository Pattern** - Clean abstraction over database operations
-- 🔄 **Transaction Support** - ACID-compliant transaction handling
-- 🔀 **Migration System** - Database schema version control
-- 📝 **TypeScript First** - Full type safety and IntelliSense support
-- ⚡ **Performance Optimized** - Automatic query caching and optimization
+- 📦 **Repository Pattern** - Clean data access layer
+- 🔄 **Transaction Support** - ACID-compliant transactions
+- 📊 **Migration System** - Database version control
+- 🎯 **TypeScript** - Full type safety and IntelliSense
+- ⚡ **Performance** - Optimized queries with caching
+- 🔍 **Logging** - Built-in query and error logging
+- 🚀 **Auto-Sync** - Automatic database creation and schema synchronization
+- 📋 **30+ Models** - Complete model definitions from reference and optimization
 - 🎯 **Microservice Ready** - Designed for distributed systems
 
 ## Installation
@@ -52,19 +55,54 @@ import { DBCore } from '@rohit_patil/db-core';
 
 const db = new DBCore();
 
-// Initialize connections
-await db.initialize();
+try {
+  // Basic initialization
+  await db.initialize();
+  console.log('✅ Connected to database');
+  
+  // OR with auto-sync (creates database and all tables automatically)
+  await db.initialize({
+    ensureDatabase: true,  // Create database if it doesn't exist
+    syncSchema: true,       // Create all 30+ tables automatically
+  });
+  console.log('✅ Database and schema ready!');
+} catch (error) {
+  console.error('❌ Connection failed:', error);
+}
 
 // Use the database
 const users = await db.table('users').get();
 
 // Close connections when done
 await db.close();
-```
 
 ## Usage Examples
 
-### Query Builder
+### 3. Auto-Sync Feature
+
+Automatically create database and sync all 30+ tables:
+
+```typescript
+import { DBCore } from '@rohit_patil/db-core';
+
+// Option 1: Auto-sync on initialization
+const db = new DBCore(undefined, undefined, { autoSync: true });
+await db.initialize({ ensureDatabase: true, syncSchema: true });
+
+// Option 2: Manual sync after initialization
+const db2 = new DBCore();
+await db2.initialize();
+await db2.syncSchema();
+
+// Check schema status
+const isUpToDate = await db.isSchemaUpToDate();
+const tables = await db.getExistingTables();
+console.log(`Tables: ${tables.length}, Up to date: ${isUpToDate}`);
+```
+
+📚 **See [AUTO_SYNC.md](AUTO_SYNC.md) for complete guide**
+
+### 4. Query Builder
 
 ```typescript
 // Select with conditions
