@@ -138,6 +138,9 @@ export class SchemaManager {
         );
         CREATE INDEX IF NOT EXISTS idx_tenants_slug ON tenants(slug);
         CREATE INDEX IF NOT EXISTS idx_tenants_is_active ON tenants(is_active);
+        INSERT INTO tenants (name, slug, description, is_active, settings) VALUES 
+        ('Default Village', 'default-village', 'Default village for tax management', true, '{"currency": "INR", "timezone": "Asia/Kolkata"}'::jsonb)
+        ON CONFLICT (slug) DO NOTHING;
       `,
 
       // Users table
